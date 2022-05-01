@@ -63,7 +63,7 @@ namespace ShopBotNET.Core
                 };
 
                 // If a certificate was specified, it will be configured.
-                var certPath = configuration["CertPath"];
+                var certPath = configuration["Certificate"];
                 if (!string.IsNullOrEmpty(certPath))
                 {
                     var certBytes = File.ReadAllBytes(certPath);
@@ -73,7 +73,7 @@ namespace ShopBotNET.Core
                     webhookConfig.Certificate = cert;
                 }
 
-                Api.SetWebhook(certPath);
+                Api.SetWebhook(webhookConfig);
             }
         }
 
