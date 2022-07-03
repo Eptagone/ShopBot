@@ -51,15 +51,16 @@ namespace ShopBotNET.Core
 
             // Setup Webhook
             var applicationUrl = configuration["ApplicationUrl"]; // https://www.example.com
-            var secretToken = telegram["WebhookToken"]; // https://www.example.com/bot/<token>
+            var secretToken = telegram["SecretToken"]; // https://www.example.com/bot/<token>
 
             // If applicationUrl and secretToken aren't null, then the bot will be configured to use a Webhook.
             // Otherwise, bot will still be able to use Long Polling.
             if (!string.IsNullOrEmpty(applicationUrl) && !string.IsNullOrEmpty(secretToken))
             {
-                var webhookConfig = new SetWebhookArgs()
+                var url = string.Format("{0}/bot", applicationUrl);
+                var webhookConfig = new SetWebhookArgs(url)
                 {
-                    Url = string.Format("{0}/bot/{1}", applicationUrl, secretToken)
+                    SecretToken = secretToken
                 };
 
                 // If a certificate was specified, it will be configured.

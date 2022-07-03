@@ -25,10 +25,10 @@ Your `secrets.json` or `appsettings.json` should look like the following code:
 
 You can also use enviroment variables instead:
 
-| Env                               | Description                                                      |
-| :-------------------------------- | :--------------------------------------------------------------- |
-| Telegram__BotToken                | Your bot token provided by [@BotFather](https://t.me/BotFather). |
-| Telegram__Payments__ProviderToken | Your provider token.                                             |
+| Env                                   | Description                                                      |
+| :------------------------------------ | :--------------------------------------------------------------- |
+| Telegram\_\_BotToken                  | Your bot token provided by [@BotFather](https://t.me/BotFather). |
+| Telegram\_\_Payments\_\_ProviderToken | Your provider token.                                             |
 
 Finally, run `ShopBotNET.AppService` and see the magic.
 
@@ -44,7 +44,7 @@ Your `secrets.json` or `appsettings.json` should look like the following code:
   //"Certificate": "/etc/ssl/certs/custom_cert.pem",
   "Telegram": {
     "BotToken": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    "WebhookToken": "SUPERSECRETPATH",
+    "SecretToken": "SUPERSECRETTOKEN",
     "Payments": {
       "ProviderToken": "123456789:TEST:XXXXXXXXXXXXXXXXX"
     }
@@ -54,12 +54,12 @@ Your `secrets.json` or `appsettings.json` should look like the following code:
 
 You can also use enviroment variables instead:
 
-| Env                               | Description                                                      |
-| :-------------------------------- | :--------------------------------------------------------------- |
-| ApplicationUrl                    | Your application url. Ex: <https://example.com>                  |
-| Certificate                       | Optional. Certificate Path.                                      |
-| Telegram__BotToken                | Your bot token provided by [@BotFather](https://t.me/BotFather). |
-| Telegram__WebhookToken            | Your secret token. It must be specified by yourself.             |
-| Telegram__Payments__ProviderToken | Your provider token.                                             |
+| Env                                   | Description                                                      |
+| :------------------------------------ | :--------------------------------------------------------------- |
+| ApplicationUrl                        | Your application url. Ex: <https://example.com>                  |
+| Certificate                           | Optional. Certificate Path.                                      |
+| Telegram\_\_BotToken                  | Your bot token provided by [@BotFather](https://t.me/BotFather). |
+| Telegram\_\_SecretToken               | Your secret token. It must be specified by yourself.             |
+| Telegram\_\_Payments\_\_ProviderToken | Your provider token.                                             |
 
 Finally, run `ShopBotNET.Webhook` and see the magic.

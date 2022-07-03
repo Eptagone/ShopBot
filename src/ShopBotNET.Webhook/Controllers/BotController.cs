@@ -22,10 +22,10 @@ namespace ShopBotNET.Webhook.Controllers
             _bot = bot;
         }
 
-        [HttpGet("{webhookToken}")]
-        public IActionResult Get(string webhookToken)
+        [HttpGet]
+        public IActionResult Get([FromHeader(Name = "X-Telegram-Bot-Api-Secret-Token")] string secretToken)
         {
-            if (_configuration["Telegram:WebhookToken"] != webhookToken)
+            if (_configuration["Telegram:SecretToken"] != secretToken)
             {
                 _logger.LogWarning("Failed access!");
                 Unauthorized();
@@ -33,10 +33,12 @@ namespace ShopBotNET.Webhook.Controllers
             return Ok();
         }
 
-        [HttpPost("{webhookToken}")]
-        public async Task<IActionResult> PostAsync(string webhookToken, [FromBody] Update update, CancellationToken cancellationToken)
+        [HttpPost]
+        public async Task<IActionResult> PostAsync(
+            [FromHeader(Name = "X-Telegram-Bot-Api-Secret-Token")] string secretToken,
+            [FromBody] Update update, CancellationToken cancellationToken)
         {
-            if (_configuration["Telegram:WebhookToken"] != webhookToken)
+            if (_configuration["Telegram:SecretToken"] != secretToken)
             {
 #if DEBUG
                 _logger.LogWarning("Failed access");
