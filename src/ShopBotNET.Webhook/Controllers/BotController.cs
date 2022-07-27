@@ -28,7 +28,7 @@ namespace ShopBotNET.Webhook.Controllers
             if (_configuration["Telegram:SecretToken"] != secretToken)
             {
                 _logger.LogWarning("Failed access!");
-                Unauthorized();
+                return Unauthorized();
             }
             return Ok();
         }
@@ -43,7 +43,7 @@ namespace ShopBotNET.Webhook.Controllers
 #if DEBUG
                 _logger.LogWarning("Failed access");
 #endif
-                Unauthorized();
+                return Unauthorized();
             }
             if (update == default)
             {
