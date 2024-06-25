@@ -4,14 +4,13 @@
 using ShopBotNET.Core.Data;
 using ShopBotNET.Core.Entities;
 
-namespace ShopBotNET.Infrastructure.Data
-{
-    public sealed class DemoInvoiceRepository : RepositoryBase<CacheDbContext, DemoInvoice>, IDemoInvoiceRepository
-    {
-        public DemoInvoiceRepository(CacheDbContext context) : base(context)
-        {
-        }
+namespace ShopBotNET.Infrastructure.Data;
 
-        public DemoInvoice? GetConfiguration(long chatId, int messageId) => _context.DemoInvoices.FirstOrDefault(d => d.ChatId == chatId && d.MessageId == messageId);
-    }
+public sealed class DemoInvoiceRepository : RepositoryBase<CacheDbContext, DemoInvoice>, IDemoInvoiceRepository
+{
+	public DemoInvoiceRepository(CacheDbContext context) : base(context)
+	{
+	}
+
+	public DemoInvoice? GetConfiguration(long chatId, int messageId) => this._context.DemoInvoices.FirstOrDefault(d => d.ChatId == chatId && d.MessageId == messageId);
 }

@@ -4,30 +4,29 @@
 using Microsoft.EntityFrameworkCore;
 using ShopBotNET.Core.Entities;
 
-namespace ShopBotNET.Infrastructure
+namespace ShopBotNET.Infrastructure;
+
+/// <summary>Cache DB Context</summary>
+public partial class CacheDbContext : DbContext
 {
-    /// <summary>Cache DB Context</summary>
-    public partial class CacheDbContext : DbContext
-    {
-        /// <summary>Initialize a new instance of <see cref="CacheDbContext"/>.</summary>
-        public CacheDbContext()
-        {
-        }
+	/// <summary>Initialize a new instance of <see cref="CacheDbContext"/>.</summary>
+	public CacheDbContext()
+	{
+	}
 
-        /// <summary>Initialize a new instance of <see cref="CacheDbContext"/>.</summary>
-        public CacheDbContext(DbContextOptions<CacheDbContext> options)
-            : base(options)
-        {
-        }
+	/// <summary>Initialize a new instance of <see cref="CacheDbContext"/>.</summary>
+	public CacheDbContext(DbContextOptions<CacheDbContext> options)
+		: base(options)
+	{
+	}
 
-        public virtual DbSet<UserState> States { get; set; }
-        public virtual DbSet<DemoInvoice> DemoInvoices { get; set; }
+	public virtual DbSet<UserState> States { get; set; }
+	public virtual DbSet<DemoInvoice> DemoInvoices { get; set; }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            OnModelCreatingPartial(modelBuilder);
-        }
+	protected override void OnModelCreating(ModelBuilder modelBuilder)
+	{
+		this.OnModelCreatingPartial(modelBuilder);
+	}
 
-        partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
-    }
+	partial void OnModelCreatingPartial(ModelBuilder modelBuilder);
 }

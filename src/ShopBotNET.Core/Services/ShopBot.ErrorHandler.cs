@@ -3,23 +3,23 @@
 
 using Microsoft.Extensions.Logging;
 using Telegram.BotAPI;
+using Telegram.BotAPI.Extensions;
 
-namespace ShopBotNET.Core.Services
+namespace ShopBotNET.Core.Services;
+
+/// <summary>
+/// It contains the main functionality of the telegram bot. <br />
+/// The application creates a new instance of this class to process each update received.
+/// </summary>
+public partial class ShopBot : SimpleTelegramBotBase
 {
-    /// <summary>
-    /// It contains the main functionality of the telegram bot. <br />
-    /// The application creates a new instance of this class to process each update received.
-    /// </summary>
-    public partial class ShopBot : TelegramBotBase<ShopBotProperties>
-    {
-        protected override void OnBotException(BotRequestException exp)
-        {
-            _logger.LogError("BotRequestException: {message}", exp.Message);
-        }
+	protected override void OnBotException(BotRequestException exp)
+	{
+		this.logger.LogError("BotRequestException: {message}", exp.Message);
+	}
 
-        protected override void OnException(Exception exp)
-        {
-            _logger.LogError("Exception: {message}", exp.Message);
-        }
-    }
+	protected override void OnException(Exception exp)
+	{
+		this.logger.LogError("Exception: {message}", exp.Message);
+	}
 }

@@ -1,6 +1,7 @@
 // Copyright (c) 2022 Quetzal Rivera.
 // Licensed under the GNU General Public License v3.0, See LICENCE in the project root for license information.
 
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using ShopBotNET.Core;
 using ShopBotNET.Core.Data;
@@ -30,17 +31,26 @@ var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
-    // Create cache file
-    using var context = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
-    context.Database.EnsureCreated();
+	// Create cache file
+	using var context = scope.ServiceProvider.GetRequiredService<CacheDbContext>();
+	context.Database.EnsureCreated();
 
-    // Make sure ShopBotProperties is working.
-    _ = scope.ServiceProvider.GetRequiredService<ShopBotProperties>();
+	// Make sure ShopBotProperties is working.
+	_ = scope.ServiceProvider.GetRequiredService<ShopBotProperties>();
 }
 
 // Configure the HTTP request pipeline.
 
-app.UseHttpsRedirection();
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+	ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
+
+if (!app.Environment.IsDevelopment())
+{
+	app.UseHsts();
+	app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 

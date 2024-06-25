@@ -6,56 +6,61 @@ using ShopBotNET.Core.Services;
 using Telegram.BotAPI;
 using Telegram.BotAPI.GettingUpdates;
 
-namespace ShopBotNET.AppService
+namespace ShopBotNET.AppService;
+
+/// <summary>
+/// This service class is used to get updates via Long Polling.
+/// </summary>
+public class Worker(
+    ILogger<Worker> logger,
+    ShopBotProperties botProperties,
+    IServiceProvider serviceProvider
+) : BackgroundService
 {
-    /// <summary>
-    /// This service class is used to get updates via Long Polling.
-    /// </summary>
-    public class Worker : BackgroundService
+    private readonly ITelegramBotClient client = botProperties.Client;
+    private readonly ILogger<Worker> logger = logger;
+    private readonly IServiceProvider serviceProvider = serviceProvider;
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        private readonly BotClient _api;
-        private readonly ILogger<Worker> _logger;
-        private readonly IServiceProvider _serviceProvider;
+        this.logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-        public Worker(ILogger<Worker> logger, ShopBotProperties botProperties, IServiceProvider serviceProvider)
+        // Long Polling
+        var updates = await this
+            .client.GetUpdatesAsync(cancellationToken: stoppingToken)
+            .ConfigureAwait(false);
+        while (!stoppingToken.IsCancellationRequested)
         {
-            _logger = logger;
-            _api = botProperties.Api;
-            _serviceProvider = serviceProvider;
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
-        {
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-
-            // Long Polling
-            var updates = await _api.GetUpdatesAsync(cancellationToken: stoppingToken).ConfigureAwait(false);
-            while (!stoppingToken.IsCancellationRequested)
+            if (updates.Any())
             {
-                if (updates.Any())
-                {
-                    Parallel.ForEach(updates, (update) => ProcessUpdate(update));
+                Parallel.ForEach(updates, (update) => this.ProcessUpdate(update));
 
-                    updates = await _api.GetUpdatesAsync(updates[^1].UpdateId + 1, cancellationToken: stoppingToken).ConfigureAwait(false);
-                }
-                else
-                {
-                    updates = await _api.GetUpdatesAsync(cancellationToken: stoppingToken).ConfigureAwait(false);
-                }
+                updates = await this
+                    .client.GetUpdatesAsync(
+                        updates.Last().UpdateId + 1,
+                        cancellationToken: stoppingToken
+                    )
+                    .ConfigureAwait(false);
+            }
+            else
+            {
+                updates = await this
+                    .client.GetUpdatesAsync(cancellationToken: stoppingToken)
+                    .ConfigureAwait(false);
             }
         }
+    }
 
-        public override Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Worker stopping at: {time}", DateTimeOffset.Now);
-            return base.StopAsync(cancellationToken);
-        }
+    public override Task StopAsync(CancellationToken cancellationToken)
+    {
+        this.logger.LogInformation("Worker stopping at: {time}", DateTimeOffset.Now);
+        return base.StopAsync(cancellationToken);
+    }
 
-        private void ProcessUpdate(Update update)
-        {
-            using var scope = _serviceProvider.CreateScope();
-            var bot = scope.ServiceProvider.GetRequiredService<ShopBot>();
-            bot.OnUpdate(update);
-        }
+    private void ProcessUpdate(Update update)
+    {
+        using var scope = this.serviceProvider.CreateScope();
+        var bot = scope.ServiceProvider.GetRequiredService<ShopBot>();
+        bot.OnUpdate(update);
     }
 }

@@ -4,22 +4,21 @@
 using Telegram.BotAPI.InlineMode;
 using Telegram.BotAPI.Payments;
 
-namespace ShopBotNET.Core.Data
-{
-    public interface IProducts
-    {
-        /// <summary>
-        /// Retrive all available products.
-        /// </summary>
-        /// <param name="providerToken">Provider token.</param>
-        /// <returns>An IEnumerable of <see cref="InlineQueryResult"/></returns>
-        IEnumerable<InlineQueryResult> GetProducts(string providerToken);
+namespace ShopBotNET.Core.Data;
 
-        /// <summary>
-        /// Retrieve all available shipping options for a specific product.
-        /// </summary>
-        /// <param name="Id">Invoice payload</param>
-        /// <returns>An IEnumerable of <see cref="ShippingOption"/></returns>
-        IEnumerable<ShippingOption> GetShippingOptions(string payload, ShippingAddress address);
-    }
+public interface IProducts
+{
+	/// <summary>
+	/// Retrive all available products.
+	/// </summary>
+	/// <param name="providerToken">Provider token.</param>
+	/// <returns>An IEnumerable of <see cref="InlineQueryResult"/></returns>
+	IEnumerable<InlineQueryResult> GetProducts(string providerToken);
+
+	/// <summary>
+	/// Retrieve all available shipping options for a specific product.
+	/// </summary>
+	/// <param name="Id">Invoice payload</param>
+	/// <returns>An IEnumerable of <see cref="ShippingOption"/></returns>
+	IEnumerable<ShippingOption> GetShippingOptions(string payload, ShippingAddress address);
 }

@@ -3,21 +3,20 @@
 
 using ShopBotNET.Core.Data;
 
-namespace ShopBotNET.Infrastructure.Data
+namespace ShopBotNET.Infrastructure.Data;
+
+public sealed class ShopDb : IShopDb
 {
-    public sealed class ShopDb : IShopDb
-    {
-        public ShopDb(CacheDbContext context)
-        {
-            Products = new ProductRepository();
+	public ShopDb(CacheDbContext context)
+	{
+		this.Products = new ProductRepository();
 
-            States = new UserStateRepository(context);
-            DemoInvoices = new DemoInvoiceRepository(context);
-        }
+		this.States = new UserStateRepository(context);
+		this.DemoInvoices = new DemoInvoiceRepository(context);
+	}
 
-        public IProducts Products { get; }
+	public IProducts Products { get; }
 
-        public IUserStateRepository States { get; }
-        public IDemoInvoiceRepository DemoInvoices { get; }
-    }
+	public IUserStateRepository States { get; }
+	public IDemoInvoiceRepository DemoInvoices { get; }
 }

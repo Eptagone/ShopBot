@@ -8,83 +8,79 @@ using Telegram.BotAPI.AvailableTypes;
 using Telegram.BotAPI.GettingUpdates;
 using File = System.IO.File;
 
-namespace ShopBotNET.Core
+namespace ShopBotNET.Core;
+
+/// <summary>
+/// This class defines all the necessary settings and properties for the bot to work. <br />
+/// The application uses a single instance of this class.
+/// </summary>
+public sealed class ShopBotProperties
 {
-    /// <summary>
-    /// This class defines all the necessary settings and properties for the bot to work. <br />
-    /// The application uses a single instance of this class.
-    /// </summary>
-    public sealed class ShopBotProperties : IBotProperties
+    public ShopBotProperties(IConfiguration configuration)
     {
-        private readonly BotCommandHelper _commandHelper;
+        var botToken = configuration[Config.BotToken]; // ENV: Telegram__BotToken, JSON: "Telegram:BotToken"
 
-        public ShopBotProperties(IConfiguration configuration)
+        if (string.IsNullOrEmpty(botToken))
         {
-            var telegram = configuration.GetSection("Telegram"); // JSON: "Telegram"
-            var botToken = telegram["BotToken"]; // ENV: Telegram__BotToken, JSON: "Telegram:BotToken"
-
-            Api = new BotClient(botToken);
-            User = Api.GetMe();
-
-            _commandHelper = new BotCommandHelper(this);
-
-            var payments = telegram.GetSection("Payments"); // JSON: "Telegram:Payments"
-            var providerToken = payments["ProviderToken"]; // ENV: Telegram__Payments__ProviderToken, JSON: "Telegram:Payments:ProviderToken"
-
-            if (string.IsNullOrEmpty(providerToken))
-            {
-                throw new ArgumentNullException("Payments provider token can't be null.");
-            }
-
-            ProviderToken = providerToken;
-
-            // Delete my old commands
-            Api.DeleteMyCommands();
-            // Set my commands
-            Api.SetMyCommands(
-                new BotCommand("invoice", "Try out Telegram Payments"),
-                new BotCommand("terms", "Terms and Conditions"),
-                new BotCommand("support", "Leave Feedback"));
-
-            // Delete webhook to use Long Polling
-            Api.DeleteWebhook();
-
-            // Setup Webhook
-            var applicationUrl = configuration["ApplicationUrl"]; // https://www.example.com
-            var secretToken = telegram["SecretToken"]; // https://www.example.com/bot/<token>
-
-            // If applicationUrl and secretToken aren't null, then the bot will be configured to use a Webhook.
-            // Otherwise, bot will still be able to use Long Polling.
-            if (!string.IsNullOrEmpty(applicationUrl) && !string.IsNullOrEmpty(secretToken))
-            {
-                var url = string.Format("{0}/bot", applicationUrl);
-                var webhookConfig = new SetWebhookArgs(url)
-                {
-                    SecretToken = secretToken
-                };
-
-                // If a certificate was specified, it will be configured.
-                var certPath = configuration["Certificate"];
-                if (!string.IsNullOrEmpty(certPath))
-                {
-                    var certBytes = File.ReadAllBytes(certPath);
-                    var filename = Path.GetFileName(certPath);
-                    var cert = new InputFile(certBytes, filename);
-
-                    webhookConfig.Certificate = cert;
-                }
-
-                Api.SetWebhook(webhookConfig);
-            }
+            throw new ArgumentNullException("Telegram bot token can't be null.");
         }
 
-        /// <summary>
-        /// Payments provider token.
-        /// </summary>
-        public string ProviderToken { get; }
-        public BotClient Api { get; }
-        public User User { get; }
+        this.Client = new TelegramBotClient(botToken);
+        this.User = this.Client.GetMe();
 
-        IBotCommandHelper IBotProperties.CommandHelper => _commandHelper;
+        var providerToken = configuration[Config.ProviderToken]; // ENV: Telegram__Payments__ProviderToken, JSON: "Telegram:Payments:ProviderToken"
+
+        if (string.IsNullOrEmpty(providerToken))
+        {
+            throw new ArgumentNullException("Payments provider token can't be null.");
+        }
+
+        this.ProviderToken = providerToken;
+
+        // Delete my old commands
+        this.Client.DeleteMyCommands();
+        // Set my commands
+        this.Client.SetMyCommands(
+            [
+                new("invoice", "Try out Telegram Payments"),
+                new("terms", "Terms and Conditions"),
+                new("support", "Leave Feedback")
+            ]
+        );
+
+        // Delete webhook to use Long Polling
+        this.Client.DeleteWebhook();
+
+        // Setup Webhook
+        var applicationUrl = configuration[Config.ApplicationUrl]; // https://www.example.com
+        var secretToken = configuration[Config.SecretToken]; // https://www.example.com/bot/<token>
+
+        // If applicationUrl and secretToken aren't null, then the bot will be configured to use a Webhook.
+        // Otherwise, bot will still be able to use Long Polling.
+        if (!string.IsNullOrEmpty(applicationUrl) && !string.IsNullOrEmpty(secretToken))
+        {
+            var url = string.Format("{0}/bot", applicationUrl);
+            var webhookConfig = new SetWebhookArgs(url) { SecretToken = secretToken };
+
+            // If a certificate was specified, it will be configured.
+            var certPath = configuration[Config.Certificate];
+            if (!string.IsNullOrEmpty(certPath))
+            {
+                var certBytes = File.ReadAllBytes(certPath);
+                var filename = Path.GetFileName(certPath);
+                var cert = new InputFile(certBytes, filename);
+
+                webhookConfig.Certificate = cert;
+            }
+
+            this.Client.SetWebhook(webhookConfig);
+        }
     }
+
+    /// <summary>
+    /// Payments provider token.
+    /// </summary>
+    public string ProviderToken { get; }
+    public TelegramBotClient Client { get; }
+    public User User { get; }
 }
