@@ -1,6 +1,6 @@
 # ShopBot
 
-This is a Telegram bot imitation of [@ShopBot](https://t.me/ShopBot) made with NET 6.
+This is a Telegram bot imitation of [@ShopBot](https://t.me/ShopBot) made with NET 8.
 
 This bot can do everything [@ShopBot](https://t.me/ShopBot) does, or well... almost everything. You won't be able to see the difference. If you're interested in how the Payment API works in Bots, this project can help you.
 
@@ -14,21 +14,19 @@ Your `secrets.json` or `appsettings.json` should look like the following code:
 
 ```JSON
 {
-"Telegram": {
+"ShopBot": {
     "BotToken": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
-    "Payments": {
-      "ProviderToken": "123456789:TEST:XXXXXXXXXXXXXXXXX"
-    }
+    "ProviderToken": "123456789:TEST:XXXXXXXXXXXXXXXXX"
   }
 }
 ```
 
 You can also use enviroment variables instead:
 
-| Env                                   | Description                                                      |
-| :------------------------------------ | :--------------------------------------------------------------- |
-| Telegram\_\_BotToken                  | Your bot token provided by [@BotFather](https://t.me/BotFather). |
-| Telegram\_\_Payments\_\_ProviderToken | Your provider token.                                             |
+| Env                      | Description                                                      |
+| :----------------------- | :--------------------------------------------------------------- |
+| ShopBot\_\_BotToken      | Your bot token provided by [@BotFather](https://t.me/BotFather). |
+| ShopBot\_\_ProviderToken | Your provider token.                                             |
 
 Finally, run `ShopBotNET.AppService` and see the magic.
 
@@ -40,26 +38,22 @@ Your `secrets.json` or `appsettings.json` should look like the following code:
 
 ```JSON
 {
-  "ApplicationUrl": "https://www.example.com",
-  //"Certificate": "/etc/ssl/certs/custom_cert.pem",
-  "Telegram": {
+  "ShopBot": {
+    "WebhookUrl": "https://www.example.com",
     "BotToken": "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
     "SecretToken": "SUPERSECRETTOKEN",
-    "Payments": {
-      "ProviderToken": "123456789:TEST:XXXXXXXXXXXXXXXXX"
-    }
+    "ProviderToken": "123456789:TEST:XXXXXXXXXXXXXXXXX"
   }
 }
 ```
 
 You can also use enviroment variables instead:
 
-| Env                                   | Description                                                      |
-| :------------------------------------ | :--------------------------------------------------------------- |
-| ApplicationUrl                        | Your application url. Ex: <https://example.com>                  |
-| Certificate                           | Optional. Certificate Path.                                      |
-| Telegram\_\_BotToken                  | Your bot token provided by [@BotFather](https://t.me/BotFather). |
-| Telegram\_\_SecretToken               | Your secret token. It must be specified by yourself.             |
-| Telegram\_\_Payments\_\_ProviderToken | Your provider token.                                             |
+| Env                      | Description                                                      |
+| :----------------------- | :--------------------------------------------------------------- |
+| ShopBot\_\_WebhookUrl    | Your webhook url. Ex: <https://example.com>                      |
+| ShopBot\_\_SecretToken   | Your webhook secret token. It must be specified by yourself.     |
+| ShopBot\_\_BotToken      | Your bot token provided by [@BotFather](https://t.me/BotFather). |
+| ShopBot\_\_ProviderToken | Your provider token.                                             |
 
 Finally, run `ShopBotNET.Webhook` and see the magic.
